@@ -5,12 +5,16 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+		jcenter()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
 		classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
 		classpath("org.jetbrains.kotlin:kotlin-noarg:${kotlinVersion}")
+
+		// docker
+		classpath("com.bmuschko:gradle-docker-plugin:4.0.0")
 	}
 }
 
@@ -20,6 +24,9 @@ apply plugin: 'kotlin-jpa'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+
+// docker
+apply plugin: 'com.bmuschko.docker-spring-boot-application'
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -39,6 +46,7 @@ compileTestKotlin {
 
 repositories {
 	mavenCentral()
+	jcenter()
 }
 
 
@@ -50,4 +58,13 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	runtimeOnly('com.h2database:h2')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
+}
+
+// docker
+docker {
+	springBootApplication {
+		baseImage = 'openjdk:8-alpine'
+		ports = [9090, 8080]
+		tag = 'demo-jpa:1.0.0'
+	}
 }
